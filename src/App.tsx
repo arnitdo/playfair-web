@@ -3,7 +3,8 @@ import { useState } from "react"
 const ARRLEN = 25
 const NUMROWS = 5
 const NUMCOLS = 5
-const CHARLIST = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+const CHARSTR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const CHARLIST = Array.from(CHARSTR)
 
 export default function App() {
 	const [cypherSecret, setCypherSecret] = useState<string>("")
@@ -195,9 +196,10 @@ export default function App() {
 						value={cypherSecret}
 						onChange={(e) => {
 							setCypherSecret(
-								e.target.value
-									.toUpperCase()
-									.split(/\s/)
+								Array.from(e.target.value.toUpperCase())
+									.filter((newChar) => {
+										return CHARLIST.includes(newChar)
+									})
 									.join(""),
 							)
 						}}
@@ -210,9 +212,10 @@ export default function App() {
 						value={cypherMessage}
 						onChange={(e) => {
 							setCypherMessage(
-								e.target.value
-									.toUpperCase()
-									.split(/\s/)
+								Array.from(e.target.value.toUpperCase())
+									.filter((newChar) => {
+										return CHARLIST.includes(newChar)
+									})
 									.join(""),
 							)
 						}}
