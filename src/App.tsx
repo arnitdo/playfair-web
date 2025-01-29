@@ -143,7 +143,9 @@ export default function App() {
 			}
 		>
 			<div
-				className={"flex flex-row items-center justify-between gap-32"}
+				className={
+					"flex flex-col items-center justify-between gap-16 lg:flex-row lg:gap-32"
+				}
 			>
 				<div className={"grid grid-cols-5 grid-rows-5 gap-0 border"}>
 					{Array(NUMROWS)
