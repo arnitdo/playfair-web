@@ -6,7 +6,7 @@ const NUMCOLS = 5
 const CHARSTR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const CHARLIST = Array.from(CHARSTR)
 
-export default function App() {
+export default function Encrypt() {
 	const [cypherSecret, setCypherSecret] = useState<string>("")
 	const [cypherMessage, setCypherMessage] = useState<string>("")
 
@@ -50,8 +50,13 @@ export default function App() {
 
 	function getMatrixIndexOfChar(char: string) {
 		if (char.toUpperCase() === char) {
-			if (char === "J") {
-				return getMatrixIndexOfChar("I")
+			if (char === "J" || char === "I") {
+				const jIndex = cypherMatrix.indexOf("J")
+				const iIndex = cypherMatrix.indexOf("I")
+				if (jIndex === -1 && iIndex === -1) {
+					return -1
+				}
+				return Math.max(...[jIndex, iIndex])
 			}
 			return cypherMatrix.indexOf(char)
 		}
@@ -102,17 +107,6 @@ export default function App() {
 			let [leftRow, leftCol] = splitIndex(leftIdx)
 			let [rightRow, rightCol] = splitIndex(rightIdx)
 
-			console.log({
-				leftChar,
-				rightChar,
-				leftIdx,
-				rightIdx,
-				leftRow,
-				leftCol,
-				rightRow,
-				rightCol,
-			})
-
 			if (leftRow === rightRow) {
 				// Case 1: Same Row, Shift Ahead
 				leftCol = (leftCol + 1) % NUMCOLS
@@ -139,110 +133,98 @@ export default function App() {
 	return (
 		<div
 			className={
-				"flex min-h-screen min-w-screen items-center justify-center"
+				"flex flex-col items-center justify-between gap-16 lg:flex-row lg:gap-32"
 			}
 		>
-			<div
-				className={
-					"flex flex-col items-center justify-between gap-16 lg:flex-row lg:gap-32"
-				}
-			>
-				<div className={"grid grid-cols-5 grid-rows-5 gap-0 border"}>
-					{Array(NUMROWS)
-						.fill(undefined)
-						.map((_ignoreRow, rowIdx) => {
-							return (
-								<>
-									{Array(NUMCOLS)
-										.fill(undefined)
-										.map((_ignoreCol, colIdx) => {
-											const mtxChar =
-												cypherMatrix[
-													rowIdx * 5 + colIdx
-												]
-											return (
-												<div
-													className={
-														"flex aspect-square items-center justify-center border p-4"
-													}
-													style={{
-														backgroundColor:
-															cypherSecret.includes(
-																mtxChar,
-															)
-																? "yellow"
-																: "",
-													}}
-												>
-													{mtxChar}
-												</div>
-											)
-										})}
-								</>
-							)
-						})}
-				</div>
-				<form
-					onSubmit={(e) => {
-						e.preventDefault()
-						e.stopPropagation()
-					}}
-					className={
-						"flex flex-col items-start justify-between gap-4"
-					}
-				>
-					<label htmlFor={"cypherSecret"}>Cypher Secret</label>
-					<input
-						id={"cypherSecret"}
-						type={"text"}
-						value={cypherSecret}
-						onChange={(e) => {
-							setCypherSecret(
-								Array.from(e.target.value.toUpperCase())
-									.filter((newChar) => {
-										return CHARLIST.includes(newChar)
-									})
-									.join(""),
-							)
-						}}
-						className={"rounded border p-2"}
-					/>
-					<label htmlFor={"cypherMessage"}>Cypher Message</label>
-					<input
-						id={"cypherMessage"}
-						type={"text"}
-						value={cypherMessage}
-						onChange={(e) => {
-							setCypherMessage(
-								Array.from(e.target.value.toUpperCase())
-									.filter((newChar) => {
-										return CHARLIST.includes(newChar)
-									})
-									.join(""),
-							)
-						}}
-						className={"rounded border p-2"}
-					/>
-					<label htmlFor={"paddedMessage"}>Padded Message</label>
-					<input
-						id={"paddedMessage"}
-						type={"text"}
-						value={getPaddedString(cypherMessage)}
-						readOnly
-						className={"rounded border p-2"}
-					/>
-					<label htmlFor={"cypheredMessage"}>Cyphered Message</label>
-					<input
-						id={"cypheredMessage"}
-						type={"text"}
-						value={getCypheredString(
-							getPaddedString(cypherMessage),
-						)}
-						readOnly
-						className={"rounded border p-2"}
-					/>
-				</form>
+			<div className={"grid grid-cols-5 grid-rows-5 gap-0 border"}>
+				{Array(NUMROWS)
+					.fill(undefined)
+					.map((_ignoreRow, rowIdx) => {
+						return (
+							<>
+								{Array(NUMCOLS)
+									.fill(undefined)
+									.map((_ignoreCol, colIdx) => {
+										const mtxChar =
+											cypherMatrix[rowIdx * 5 + colIdx]
+										return (
+											<div
+												className={
+													"flex aspect-square items-center justify-center border p-4"
+												}
+												style={{
+													backgroundColor:
+														cypherSecret.includes(
+															mtxChar,
+														)
+															? "yellow"
+															: "",
+												}}
+											>
+												{mtxChar}
+											</div>
+										)
+									})}
+							</>
+						)
+					})}
 			</div>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
+					e.stopPropagation()
+				}}
+				className={"flex flex-col items-start justify-between gap-4"}
+			>
+				<label htmlFor={"cypherSecret"}>Cypher Secret</label>
+				<input
+					id={"cypherSecret"}
+					type={"text"}
+					value={cypherSecret}
+					onChange={(e) => {
+						setCypherSecret(
+							Array.from(e.target.value.toUpperCase())
+								.filter((newChar) => {
+									return CHARLIST.includes(newChar)
+								})
+								.join(""),
+						)
+					}}
+					className={"rounded border p-2"}
+				/>
+				<label htmlFor={"cypherMessage"}>Cypher Message</label>
+				<input
+					id={"cypherMessage"}
+					type={"text"}
+					value={cypherMessage}
+					onChange={(e) => {
+						setCypherMessage(
+							Array.from(e.target.value.toUpperCase())
+								.filter((newChar) => {
+									return CHARLIST.includes(newChar)
+								})
+								.join(""),
+						)
+					}}
+					className={"rounded border p-2"}
+				/>
+				<label htmlFor={"paddedMessage"}>Padded Message</label>
+				<input
+					id={"paddedMessage"}
+					type={"text"}
+					value={getPaddedString(cypherMessage)}
+					readOnly
+					className={"rounded border p-2"}
+				/>
+				<label htmlFor={"cypheredMessage"}>Cyphered Message</label>
+				<input
+					id={"cypheredMessage"}
+					type={"text"}
+					value={getCypheredString(getPaddedString(cypherMessage))}
+					readOnly
+					className={"rounded border p-2"}
+				/>
+			</form>
 		</div>
 	)
 }
