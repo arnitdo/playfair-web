@@ -68,28 +68,6 @@ export default function Decrypt() {
 		return [(index - (index % 5)) / 5, index % 5] as const
 	}
 
-	function getPaddedString(inputString: string) {
-		const upperInput = inputString.toUpperCase()
-		let targetString = ""
-		Array.from(upperInput).forEach((inputChar, charIdx) => {
-			if (charIdx === 0) {
-				targetString += inputChar
-			} else {
-				if (upperInput[charIdx - 1] === inputChar) {
-					targetString += `${nullChar}${nullChar}${inputChar}`
-				} else {
-					targetString += inputChar
-				}
-			}
-		})
-
-		if (targetString.length % 2) {
-			targetString += nullChar
-		}
-
-		return targetString
-	}
-
 	function getDecypheredString(inputString: string) {
 		let decypheredString = ""
 
