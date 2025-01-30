@@ -46,7 +46,7 @@ export default function Decrypt() {
 		}
 	})
 
-	const nullChar = cypherMatrix[ARRLEN - 1]
+	// const nullChar = cypherMatrix[ARRLEN - 1]
 
 	function getMatrixIndexOfChar(char: string) {
 		if (char.toUpperCase() === char) {
