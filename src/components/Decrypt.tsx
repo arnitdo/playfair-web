@@ -46,7 +46,7 @@ export default function Decrypt() {
 		}
 	})
 
-	// const nullChar = cypherMatrix[ARRLEN - 1]
+	const nullChar = cypherMatrix[ARRLEN - 1]
 
 	function getMatrixIndexOfChar(char: string) {
 		if (char.toUpperCase() === char) {
@@ -70,6 +70,9 @@ export default function Decrypt() {
 
 	function getDecypheredString(inputString: string) {
 		let decypheredString = ""
+		if (inputString.length % 2 !== 0) {
+			inputString += nullChar
+		}
 
 		for (let inputIdx = 0; inputIdx < inputString.length; inputIdx += 2) {
 			let [leftChar, rightChar] = [
